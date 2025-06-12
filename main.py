@@ -56,12 +56,14 @@ def get_next_direction(prev_dir):
     available_dirs = [d for d in DIRECTIONS if d not in exclude]
     return random.choice(available_dirs)
 
-def move_mouse_to_window_center_partial(title_prefix):
-    # 제목에 title_prefix를 포함한 창들 모두 가져오기
-    windows = gw.getWindowsWithTitle(title_prefix)
-
+def move_mouse_to_window_center_partial():
+    
+    windows = gw.getWindowsWithTitle("Metin")
     if not windows:
-        print(f"[오류] '{title_prefix}' 가 포함된 창을 찾을 수 없습니다.")
+        windows = gw.getWindowsWithTitle("METIN")
+    
+    if not windows:
+        print(f"창을 찾을 수 없습니다.")
         return
 
     # 가장 먼저 찾은 창 사용
@@ -86,6 +88,8 @@ MATCH_THRESHOLD = 0.8
 running = False
 def find_metin_window():
     windows = gw.getWindowsWithTitle("Metin")
+    if not windows:
+        windows = gw.getWindowsWithTitle("METIN")
     if not windows:
         print("Metin 창을 찾을 수 없습니다.")
         return None
@@ -130,7 +134,7 @@ def find_and_move():
                     press_key_4()
                     press_key_4()
                     time.sleep(1)
-                    move_mouse_to_window_center_partial("Metin")
+                    move_mouse_to_window_center_partial()
 
                     found = True
                     break  # 하나만 찾고 루프 탈출
