@@ -82,45 +82,45 @@ def find_and_move():
     prev_dir = random.choice(list(DIRECTIONS))
 
     while True:
-        if not running:
-            time.sleep(0.2)
-            continue
-
-        win = find_metin_window()
-        if not win:
-            time.sleep(1)
-            continue
-
-        screenshot = ImageGrab.grab()
-        screenshot_np = np.array(screenshot)
-        screenshot_bgr = cv2.cvtColor(screenshot_np, cv2.COLOR_RGB2BGR)
-
-        found = False
-        for i in range(1, 7):
-            img_path = os.path.join(IMAGE_FOLDER, f'{i}.png')
-            if not os.path.exists(img_path):
+        if running:
+            win = find_metin_window()
+            if not win:
+                time.sleep(1)
                 continue
 
-            template = cv2.imread(img_path, cv2.IMREAD_COLOR)
-            h, w = template.shape[:2]
-            result = cv2.matchTemplate(screenshot_bgr, template, cv2.TM_CCOEFF_NORMED)
-            _, max_val, _, max_loc = cv2.minMaxLoc(result)
+            screenshot = ImageGrab.grab()
+            screenshot_np = np.array(screenshot)
+            screenshot_bgr = cv2.cvtColor(screenshot_np, cv2.COLOR_RGB2BGR)
 
-            if max_val >= MATCH_THRESHOLD:
-                center_x = max_loc[0] + w // 2
-                center_y = max_loc[1] + h // 2
-                pyautogui.moveTo(center_x, center_y, duration=0.1)
-                print(f"[{i}.png] 매칭됨 → 마우스 이동 ({center_x}, {center_y})")
-                press_key_4()
-                press_key_4()
-                time.sleep(0.7)
-                found = True
-                continue
-        move_mouse_to_window_center_partial()
-        if not found:
-            print("몬스터 없음 → 랜덤 이동")
-            move_and_right_click(win, prev_dir)
-            prev_dir = get_next_direction(prev_dir)
+            found = False
+            for i in range(1, 7):
+                img_path = os.path.join(IMAGE_FOLDER, f'{i}.png')
+                if not os.path.exists(img_path):
+                    continue
+
+                template = cv2.imread(img_path, cv2.IMREAD_COLOR)
+                h, w = template.shape[:2]
+                result = cv2.matchTemplate(screenshot_bgr, template, cv2.TM_CCOEFF_NORMED)
+                _, max_val, _, max_loc = cv2.minMaxLoc(result)
+                print(f"[{i}.png] 찾기 :({max_val})")
+                if max_val >= MATCH_THRESHOLD:
+                    center_x = max_loc[0] + w // 2
+                    center_y = max_loc[1] + h // 2
+                    pyautogui.moveTo(center_x, center_y, duration=0.1)
+                    print(f"[{i}.png] 매칭됨 → 마우스 이동 ({center_x}, {center_y})")
+                    press_key_4()
+                    press_key_4()
+                    time.sleep(0.7)
+                    found = True
+                    continue
+            move_mouse_to_window_center_partial()
+            if not found:
+                print("몬스터 없음 → 랜덤 이동")
+                move_and_right_click(win, prev_dir)
+                prev_dir = get_next_direction(prev_dir)
+        time.sleep(0.2)
+
+        
 
 def start():
     global running

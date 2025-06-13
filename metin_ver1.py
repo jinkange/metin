@@ -55,7 +55,7 @@ def find_and_move():
     global running
 
     while True:
-        if not running:
+        if running:
             # 스크린샷 찍고 numpy로 변환
             screenshot = ImageGrab.grab()
             screenshot_np = np.array(screenshot)
@@ -72,7 +72,7 @@ def find_and_move():
                 h, w = template.shape[:2]
                 result = cv2.matchTemplate(screenshot_bgr, template, cv2.TM_CCOEFF_NORMED)
                 _, max_val, _, max_loc = cv2.minMaxLoc(result)
-
+                print(f"[{i}.png] 찾기 :({max_val})")
                 if max_val >= MATCH_THRESHOLD:
                     center_x = max_loc[0] + w // 2
                     center_y = max_loc[1] + h // 2
@@ -81,7 +81,7 @@ def find_and_move():
                     time.sleep(0.7)
                     continue
             move_mouse_to_window_center_partial()
-
+        time.sleep(0.2)
                 
 def start():
     global running
