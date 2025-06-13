@@ -37,7 +37,7 @@ def move_mouse_to_window_center_partial():
 IMAGE_FOLDER = './image'
 
 # 탐색 조건
-MATCH_THRESHOLD = 0.8
+MATCH_THRESHOLD = 0.99
 running = False
 def find_metin_window():
     windows = gw.getWindowsWithTitle("Metin")
@@ -55,7 +55,7 @@ def find_and_move():
     global running
 
     while True:
-        if running:
+        if not running:
             # 스크린샷 찍고 numpy로 변환
             screenshot = ImageGrab.grab()
             screenshot_np = np.array(screenshot)
