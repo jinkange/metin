@@ -64,7 +64,7 @@ def find_and_move():
 
             found = False
             # 1.png ~ 6.png 반복 탐색
-            for i in range(1, 7):
+            for i in range(1, 11):
                 img_path = os.path.join(IMAGE_FOLDER, f'{i}.png')
                 if not os.path.exists(img_path):
                     continue

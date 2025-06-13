@@ -46,17 +46,26 @@ def move_and_right_click(win, direction):
 
     pyautogui.moveTo(target_x, target_y, duration=0.2)
     pyautogui.mouseDown(button='right')
-    time.sleep(3)
+    time.sleep(0.1)
     pyautogui.mouseUp(button='right')
 
 def press_key_4():
-    pyautogui.press('4')
-    
-def press_key_4_2():
     KEYEVENTF_KEYUP = 0x0002
     MapVirtualKey = ctypes.windll.user32.MapVirtualKeyW
     # 가상 키코드 (VK_4 = 0x34)
     vk = 0x34
+    scan_code = MapVirtualKey(vk, 0)
+    # 눌림
+    ctypes.windll.user32.keybd_event(vk, scan_code, 0, 0)
+    time.sleep(0.05)
+    # 뗌
+    ctypes.windll.user32.keybd_event(vk, scan_code, KEYEVENTF_KEYUP, 0)
+    
+def press_key_0():
+    KEYEVENTF_KEYUP = 0x0002
+    MapVirtualKey = ctypes.windll.user32.MapVirtualKeyW
+    # 가상 키코드 (VK_4 = 0x34)
+    vk = 0x30
     scan_code = MapVirtualKey(vk, 0)
     # 눌림
     ctypes.windll.user32.keybd_event(vk, scan_code, 0, 0)
@@ -107,7 +116,7 @@ def find_and_move():
             screenshot_bgr = cv2.cvtColor(screenshot_np, cv2.COLOR_RGB2BGR)
 
             found = False
-            for i in range(1, 7):
+            for i in range(1, 11):
                 img_path = os.path.join(IMAGE_FOLDER, f'{i}.png')
                 if not os.path.exists(img_path):
                     continue
@@ -122,8 +131,6 @@ def find_and_move():
                     center_y = max_loc[1] + h // 2
                     pyautogui.moveTo(center_x, center_y, duration=0.1)
                     print(f"[{i}.png] 매칭됨 → 마우스 이동 ({center_x}, {center_y})")
-                    # press_key_4_2()
-                    # press_key_4_2()
                     time.sleep(0.7)
                     found = True
                     continue
@@ -132,6 +139,8 @@ def find_and_move():
                 print("몬스터 없음 → 랜덤 이동")
                 move_and_right_click(win, prev_dir)
                 prev_dir = get_next_direction(prev_dir)
+                press_key_0()
+                time.sleep(2)
         time.sleep(0.2)
 
         
@@ -154,7 +163,7 @@ def hotkey_listener():
     print("★ 핫키 리스너 실행 중 (F1=시작, F2=정지, ESC=종료)")
     keyboard.wait('esc')
 
-def press_going_key_4_2():
+def press_going_key_4():
     while True:
         if running:
             KEYEVENTF_KEYUP = 0x0002
@@ -172,7 +181,7 @@ def press_going_key_4_2():
 if __name__ == '__main__':
     print("■ 프로그램 시작 (F1: 시작, F2: 정지, ESC: 종료)")
     threading.Thread(target=find_and_move, daemon=True).start()
-    threading.Thread(target=press_going_key_4_2, daemon=True).start()
+    threading.Thread(target=press_going_key_4, daemon=True).start()
     threading.Thread(target=hotkey_listener, daemon=True).start()
 
     try:
