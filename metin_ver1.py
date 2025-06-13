@@ -62,6 +62,7 @@ def find_and_move():
             screenshot_bgr = cv2.cvtColor(screenshot_np, cv2.COLOR_RGB2BGR)
 
 
+            found = False
             # 1.png ~ 6.png 반복 탐색
             for i in range(1, 7):
                 img_path = os.path.join(IMAGE_FOLDER, f'{i}.png')
@@ -79,8 +80,10 @@ def find_and_move():
                     pyautogui.moveTo(center_x, center_y, duration=0.1)
                     print(f"[{i}.png] 매칭됨 → 마우스 이동 ({center_x}, {center_y})")
                     time.sleep(0.7)
+                    found = True
                     continue
-            move_mouse_to_window_center_partial()
+            if not found:
+                move_mouse_to_window_center_partial()
         time.sleep(0.2)
                 
 def start():
