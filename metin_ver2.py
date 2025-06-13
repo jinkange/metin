@@ -61,11 +61,11 @@ def press_key_4():
     # 뗌
     ctypes.windll.user32.keybd_event(vk, scan_code, KEYEVENTF_KEYUP, 0)
     
-def press_key_0():
+def press_key_3():
     KEYEVENTF_KEYUP = 0x0002
     MapVirtualKey = ctypes.windll.user32.MapVirtualKeyW
     # 가상 키코드 (VK_4 = 0x34)
-    vk = 0x30
+    vk = 0x33  
     scan_code = MapVirtualKey(vk, 0)
     # 눌림
     ctypes.windll.user32.keybd_event(vk, scan_code, 0, 0)
@@ -73,6 +73,18 @@ def press_key_0():
     # 뗌
     ctypes.windll.user32.keybd_event(vk, scan_code, KEYEVENTF_KEYUP, 0)
 
+def press_key_0():
+    KEYEVENTF_KEYUP = 0x0002
+    MapVirtualKey = ctypes.windll.user32.MapVirtualKeyW
+    # 가상 키코드 (VK_4 = 0x34)
+    vk = 0x63
+    scan_code = MapVirtualKey(vk, 0)
+    # 눌림
+    ctypes.windll.user32.keybd_event(vk, scan_code, 0, 0)
+    time.sleep(0.05)
+    # 뗌
+    ctypes.windll.user32.keybd_event(vk, scan_code, KEYEVENTF_KEYUP, 0)
+    
 def get_next_direction(prev_dir):
     exclude = {prev_dir, OPPOSITE[prev_dir]}
     available_dirs = [d for d in DIRECTIONS if d not in exclude]
@@ -115,6 +127,15 @@ def find_and_move():
             screenshot_np = np.array(screenshot)
             screenshot_bgr = cv2.cvtColor(screenshot_np, cv2.COLOR_RGB2BGR)
 
+            img_path = os.path.join(IMAGE_FOLDER, f'check.png')
+            if os.path.exists(img_path):
+                template = cv2.imread(img_path, cv2.IMREAD_COLOR)
+                h, w = template.shape[:2]
+                result = cv2.matchTemplate(screenshot_bgr, template, cv2.TM_CCOEFF_NORMED)
+                _, max_val, _, max_loc = cv2.minMaxLoc(result)
+                if max_val <= MATCH_THRESHOLD:
+                    press_key_3()
+                
             found = False
             for i in range(1, 11):
                 img_path = os.path.join(IMAGE_FOLDER, f'{i}.png')
