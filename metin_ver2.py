@@ -32,7 +32,7 @@ OPPOSITE = {
 }
 
 IMAGE_FOLDER = './image'
-MATCH_THRESHOLD = 0.98
+MATCH_THRESHOLD = 0.85
 running = False
 
 def move_and_right_click(win, direction):

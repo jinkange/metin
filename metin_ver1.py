@@ -37,7 +37,7 @@ def move_mouse_to_window_center_partial():
 IMAGE_FOLDER = './image'
 
 # 탐색 조건
-MATCH_THRESHOLD = 0.99
+MATCH_THRESHOLD = 0.85
 running = False
 def find_metin_window():
     windows = gw.getWindowsWithTitle("Metin")
