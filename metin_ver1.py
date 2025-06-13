@@ -53,9 +53,6 @@ def find_metin_window():
 
 def find_and_move():
     global running
-    win = find_metin_window()
-    if not win:
-        return
 
     while True:
         if running:
@@ -64,7 +61,6 @@ def find_and_move():
             screenshot_np = np.array(screenshot)
             screenshot_bgr = cv2.cvtColor(screenshot_np, cv2.COLOR_RGB2BGR)
 
-            found = False  # 이미지 매칭 여부 추적
 
             # 1.png ~ 6.png 반복 탐색
             for i in range(1, 7):
@@ -108,3 +104,4 @@ if __name__ == '__main__':
     print("■ 이미지 탐색 시작 (F1), 정지(F2)")
     threading.Thread(target=find_and_move, daemon=True).start()
     hotkey_listener()
+    
