@@ -161,7 +161,7 @@ def find_and_move():
                 move_and_right_click(win, prev_dir)
                 prev_dir = get_next_direction(prev_dir)
                 press_key_0()
-                time.sleep(2)
+                time.sleep(4)
         time.sleep(0.2)
 
         
