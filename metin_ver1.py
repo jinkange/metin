@@ -8,6 +8,8 @@ import numpy as np
 from PIL import ImageGrab
 import pygetwindow as gw
 import pyautogui
+import ctypes
+import time
 
 def move_mouse_to_window_center_partial():
     
@@ -50,6 +52,18 @@ def find_metin_window():
     if hasattr(win, 'isMinimized') and win.isMinimized:
         win.restore()
     return win
+def press_key_3():
+    KEYEVENTF_KEYUP = 0x0002
+    MapVirtualKey = ctypes.windll.user32.MapVirtualKeyW
+    # 가상 키코드 (VK_4 = 0x34)
+    vk = 0x33  
+    scan_code = MapVirtualKey(vk, 0)
+    # 눌림
+    ctypes.windll.user32.keybd_event(vk, scan_code, 0, 0)
+    time.sleep(0.05)
+    # 뗌
+    ctypes.windll.user32.keybd_event(vk, scan_code, KEYEVENTF_KEYUP, 0)
+
 
 def find_and_move():
     global running
@@ -61,6 +75,14 @@ def find_and_move():
             screenshot_np = np.array(screenshot)
             screenshot_bgr = cv2.cvtColor(screenshot_np, cv2.COLOR_RGB2BGR)
 
+            img_path = os.path.join(IMAGE_FOLDER, f'check.png')
+            if os.path.exists(img_path):
+                template = cv2.imread(img_path, cv2.IMREAD_COLOR)
+                h, w = template.shape[:2]
+                result = cv2.matchTemplate(screenshot_bgr, template, cv2.TM_CCOEFF_NORMED)
+                _, max_val, _, max_loc = cv2.minMaxLoc(result)
+                if max_val <= MATCH_THRESHOLD:
+                    press_key_3()
 
             found = False
             # 1.png ~ 6.png 반복 탐색
