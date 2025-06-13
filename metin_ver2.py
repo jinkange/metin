@@ -113,8 +113,8 @@ def find_and_move():
                     time.sleep(0.7)
                     found = True
                     continue
-            move_mouse_to_window_center_partial()
             if not found:
+                move_mouse_to_window_center_partial()
                 print("몬스터 없음 → 랜덤 이동")
                 move_and_right_click(win, prev_dir)
                 prev_dir = get_next_direction(prev_dir)
