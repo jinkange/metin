@@ -8,6 +8,8 @@ import numpy as np
 from PIL import ImageGrab
 import pygetwindow as gw
 import random
+import ctypes
+import time
 
 DIRECTIONS = {
     "up": (0, -80),
@@ -49,6 +51,18 @@ def move_and_right_click(win, direction):
 
 def press_key_4():
     pyautogui.press('4')
+    
+def press_key_4_2():
+    KEYEVENTF_KEYUP = 0x0002
+    MapVirtualKey = ctypes.windll.user32.MapVirtualKeyW
+    # 가상 키코드 (VK_4 = 0x34)
+    vk = 0x34
+    scan_code = MapVirtualKey(vk, 0)
+    # 눌림
+    ctypes.windll.user32.keybd_event(vk, scan_code, 0, 0)
+    time.sleep(0.05)
+    # 뗌
+    ctypes.windll.user32.keybd_event(vk, scan_code, KEYEVENTF_KEYUP, 0)
 
 def get_next_direction(prev_dir):
     exclude = {prev_dir, OPPOSITE[prev_dir]}
@@ -110,6 +124,9 @@ def find_and_move():
                     print(f"[{i}.png] 매칭됨 → 마우스 이동 ({center_x}, {center_y})")
                     press_key_4()
                     press_key_4()
+                    
+                    press_key_4_2()
+                    press_key_4_2()
                     time.sleep(0.7)
                     found = True
                     continue
