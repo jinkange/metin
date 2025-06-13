@@ -83,11 +83,6 @@ def find_and_move():
             move_mouse_to_window_center_partial()
 
                 
-def hotkey_listener():
-    keyboard.add_hotkey('F1', start)
-    keyboard.add_hotkey('F2', stop)
-    keyboard.wait()
-
 def start():
     global running
     if not running:
@@ -100,8 +95,20 @@ def stop():
         print("■ 이미지 탐색 정지 (F1으로 재시작)")
         running = False
 
+def hotkey_listener():
+    keyboard.add_hotkey('F1', start)
+    keyboard.add_hotkey('F2', stop)
+    print("★ 핫키 리스너 실행 중 (F1=시작, F2=정지, ESC=종료)")
+    keyboard.wait('esc')
+
 if __name__ == '__main__':
-    print("■ 이미지 탐색 시작 (F1), 정지(F2)")
+    print("■ 프로그램 시작 (F1: 시작, F2: 정지, ESC: 종료)")
     threading.Thread(target=find_and_move, daemon=True).start()
-    hotkey_listener()
+    threading.Thread(target=hotkey_listener, daemon=True).start()
+
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print("종료됨")
     
