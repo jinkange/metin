@@ -77,7 +77,7 @@ def press_key_0():
     KEYEVENTF_KEYUP = 0x0002
     MapVirtualKey = ctypes.windll.user32.MapVirtualKeyW
     # 가상 키코드 (VK_4 = 0x34)
-    vk = 0x63
+    vk = 0x30
     scan_code = MapVirtualKey(vk, 0)
     # 눌림
     ctypes.windll.user32.keybd_event(vk, scan_code, 0, 0)
