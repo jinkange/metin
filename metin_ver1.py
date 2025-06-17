@@ -101,7 +101,7 @@ def find_and_move():
                     center_y = max_loc[1] + h // 2
                     pyautogui.moveTo(center_x, center_y, duration=0.1)
                     print(f"[{i}.png] 매칭됨 → 마우스 이동 ({center_x}, {center_y})")
-                    time.sleep(0.7)
+                    time.sleep(0.2)
                     found = True
                     continue
             if not found:
