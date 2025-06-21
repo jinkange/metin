@@ -11,6 +11,17 @@ import pyautogui
 import ctypes
 import time
 
+def find_metin_window():
+    windows = gw.getWindowsWithTitle("Metin") or gw.getWindowsWithTitle("METIN")
+    if not windows:
+        print("Metin 창을 찾을 수 없습니다.")
+        return None
+    win = windows[0]
+    if win.isMinimized:
+        win.restore()
+    return win
+
+
 def move_mouse_to_window_center_partial():
     
     windows = gw.getWindowsWithTitle("Metin")
@@ -70,8 +81,15 @@ def find_and_move():
 
     while True:
         if running:
+            win = find_metin_window()
+            if not win:
+                time.sleep(1)
+                continue
+
+            bbox = (win.left, win.top, win.left + win.width, win.top + win.height)
+            screenshot = ImageGrab.grab(bbox=bbox)            
             # 스크린샷 찍고 numpy로 변환
-            screenshot = ImageGrab.grab()
+            # screenshot = ImageGrab.grab()
             screenshot_np = np.array(screenshot)
             screenshot_bgr = cv2.cvtColor(screenshot_np, cv2.COLOR_RGB2BGR)
 
