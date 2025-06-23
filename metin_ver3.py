@@ -69,7 +69,7 @@ def move_mouse_to_window_center_partial():
         win.restore()
     center_x = win.left + win.width // 2
     center_y = win.top + win.height // 2
-    pyautogui.moveTo(center_x, center_y, duration=0.2)
+    pyautogui.moveTo(center_x+50, center_y, duration=0.2)
 
 def find_metin_window():
     windows = gw.getWindowsWithTitle("Metin") or gw.getWindowsWithTitle("METIN")
@@ -83,16 +83,26 @@ def find_metin_window():
 
 def find_and_move():
     global running, click_delay
-    prev_dir = random.choice(list(DIRECTIONS))
     while True:
         if running:
             win = find_metin_window()
             if not win:
                 time.sleep(1)
                 continue
+            # 창의 전체 좌표
+            left = win.left
+            top = win.top
+            right = win.left + win.width
+            bottom = win.top + win.height
 
+            # 50px 안쪽으로 조정한 좌표
+            inset = 80
+            inner_left = left + inset
+            inner_top = top + inset
+            inner_right = right - inset
+            inner_bottom = bottom - inset
 
-            bbox = (win.left, win.top, win.left + win.width, win.top + win.height)
+            bbox = (inner_left, inner_top, inner_right, inner_bottom)
             screenshot = ImageGrab.grab(bbox=bbox)
             
             screenshot_np = np.array(screenshot)
@@ -124,8 +134,6 @@ def find_and_move():
                     center_y = max_loc[1] + h // 2
                     pyautogui.moveTo(center_x+20, center_y-25, duration=0.1)
                     print(f"[{i}.png] 매칭됨 → 마우스 이동 ({center_x}, {center_y})")
-                    press_key_4()
-                    press_key_4()
                     time.sleep(click_delay)
                     found = True
             if not found:
@@ -173,7 +181,21 @@ def key_spammer(key, interval):
         if running and interval > 0:
             press_key(0x30 + key)
         time.sleep(interval if interval > 0 else 1)
-
+def press_going_key_4():
+    while True:
+        if running:
+            KEYEVENTF_KEYUP = 0x0002
+            MapVirtualKey = ctypes.windll.user32.MapVirtualKeyW
+            # 가상 키코드 (VK_4 = 0x34)
+            vk = 0x34
+            scan_code = MapVirtualKey(vk, 0)
+            # 눌림
+            ctypes.windll.user32.keybd_event(vk, scan_code, 0, 0)
+            time.sleep(0.05)
+            # 뗌
+            ctypes.windll.user32.keybd_event(vk, scan_code, KEYEVENTF_KEYUP, 0)
+        time.sleep(0.1)
+        
 if __name__ == '__main__':
     print("■ 프로그램 시작 (F1: 시작, F2: 정지, ESC: 종료)")
     set_parameters()
@@ -181,6 +203,7 @@ if __name__ == '__main__':
     for k in [6, 7, 8, 9]:
         threading.Thread(target=key_spammer, args=(k, repeat_times[k]), daemon=True).start()
     threading.Thread(target=hotkey_listener, daemon=True).start()
+    threading.Thread(target=press_going_key_4, daemon=True).start()
     try:
         while True:
             time.sleep(1)
