@@ -29,7 +29,7 @@ OPPOSITE = {
 }
 
 IMAGE_FOLDER = './image'
-MATCH_THRESHOLD = 0.91
+MATCH_THRESHOLD = 0.85
 running = False
 click_delay = 0.2
 repeat_times = {6: 0, 7: 0, 8: 0, 9: 0}
@@ -109,7 +109,7 @@ def find_and_move():
                     h, w = template.shape[:2]
                     result = cv2.matchTemplate(screenshot_bgr, template, cv2.TM_CCOEFF_NORMED)
                     _, max_val, _, _ = cv2.minMaxLoc(result)
-                    if max_val >= MATCH_THRESHOLD:
+                    if max_val <= MATCH_THRESHOLD:
                         print(f"check{j}.png 감지됨 → {j}번 키 누름")
                         press_key(0x30 + j)  # 0x31 = 1, 0x32 = 2, 0x33 = 3
                         press_key(0x30 + j)  # 0x31 = 1, 0x32 = 2, 0x33 = 3
@@ -137,9 +137,11 @@ def find_and_move():
                 h, w = template.shape[:2]
                 result = cv2.matchTemplate(screenshot_bgr, template, cv2.TM_CCOEFF_NORMED)
                 _, max_val, _, max_loc = cv2.minMaxLoc(result)
+                print(max_val)
                 if max_val >= MATCH_THRESHOLD:
-                    center_x = max_loc[0] + w // 2
-                    center_y = max_loc[1] + h // 2
+                    # max_loc은 bbox 기준 → 전체 화면 좌표로 환산
+                    center_x = inner_left + max_loc[0] + w // 2
+                    center_y = inner_top + max_loc[1] + h // 2
                     pyautogui.moveTo(center_x+20, center_y-25, duration=0.1)
                     print(f"[{i}.png] 매칭됨 → 마우스 이동 ({center_x}, {center_y})")
                     time.sleep(click_delay)
