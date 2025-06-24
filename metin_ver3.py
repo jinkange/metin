@@ -29,7 +29,7 @@ OPPOSITE = {
 }
 
 IMAGE_FOLDER = './image'
-MATCH_THRESHOLD = 0.85
+MATCH_THRESHOLD = 0.91
 running = False
 click_delay = 0.2
 repeat_times = {6: 0, 7: 0, 8: 0, 9: 0}
@@ -95,15 +95,9 @@ def find_and_move():
             right = win.left + win.width
             bottom = win.top + win.height
 
-            # 50px 안쪽으로 조정한 좌표
-            inset = 80
-            inner_left = left + inset
-            inner_top = top + inset
-            inner_right = right - inset
-            inner_bottom = bottom - inset
+ 
 
-            bbox = (inner_left, inner_top, inner_right, inner_bottom)
-            screenshot = ImageGrab.grab(bbox=bbox)
+            screenshot = ImageGrab.grab()
             
             screenshot_np = np.array(screenshot)
             screenshot_bgr = cv2.cvtColor(screenshot_np, cv2.COLOR_RGB2BGR)
@@ -119,6 +113,20 @@ def find_and_move():
                         print(f"check{j}.png 감지됨 → {j}번 키 누름")
                         press_key(0x30 + j)  # 0x31 = 1, 0x32 = 2, 0x33 = 3
                         press_key(0x30 + j)  # 0x31 = 1, 0x32 = 2, 0x33 = 3
+
+           # 50px 안쪽으로 조정한 좌표
+            inset = 90
+            inner_left = left + inset
+            inner_top = top + inset
+            inner_right = right - inset
+            inner_bottom = bottom - inset
+            
+            bbox = (inner_left, inner_top, inner_right, inner_bottom)
+            screenshot = ImageGrab.grab(bbox=bbox)
+            
+            screenshot_np = np.array(screenshot)
+            screenshot_bgr = cv2.cvtColor(screenshot_np, cv2.COLOR_RGB2BGR)
+
 
             found = False
             for i in range(1, 11):
